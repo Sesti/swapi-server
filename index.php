@@ -33,6 +33,45 @@ Flight::route('/api/v1/people', function(){
     Flight::json($response);
 });
 
+Flight::route('/api/v1/search', function(){
+    $query = $_GET['s'];
+    
+    if(!isset($query) || empty($query)){
+        Flight::json((object) ['count' => 0]);
+        return;
+    }
+
+    $request = json_decode(file_get_contents(API_URL . "people/?search=" . $query));
+
+    if(!$request->count){
+        Flight::json((object) ['count' => 0]);
+        return;
+    }
+
+    $persons = array_map(function($people){
+
+        $person = (object) [
+            'name' => $people->name,
+            'gender' => $people->gender,
+            'homeworld' => $people->homeworld,
+            'starships' => $people->starships,        
+        ];
+        return $person;
+
+    }, $request->results);
+
+    $response = (object) [
+        'count' => $request->count,
+        'next' => $request->next,
+        'previous' => $request->previous,
+        'persons' => $persons
+    ];
+
+    //echo $response;
+    Flight::json($response); 
+    
+});
+
 Flight::route('/api/v1/planets', function(){
     $request = json_decode(file_get_contents(API_URL . "planets/"));
     
