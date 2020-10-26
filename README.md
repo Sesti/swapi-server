@@ -16,7 +16,7 @@ Then you can start the server using
 composer start
 ```
 
-The above command will launch a server on localhost:1234
+The above command will launch a server on localhost:4321
 
 ## Next steps
 
